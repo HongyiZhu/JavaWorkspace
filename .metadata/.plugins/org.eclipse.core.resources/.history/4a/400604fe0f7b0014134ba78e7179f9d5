@@ -1,0 +1,85 @@
+package processing;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import database.ISHCDataOperator;
+
+public class CreateBigramDB {
+	ISHCDataOperator op = null;
+	Map<String, Bigram> ba = null;
+	ArrayList<Emoticon> ea = null;
+	
+	CreateBigramDB() {
+		op = new ISHCDataOperator();
+		ba = new HashMap<String, Bigram>();
+		ea = new ArrayList<Emoticon>();
+		
+		getEmo();
+		generateBigram();
+		for (Map.Entry<String, Bigram> entry: ba.entrySet()){
+			Bigram temp = entry.getValue();
+			temp.calc();
+			System.out.println(temp);
+			ba.put(entry.getKey(), temp);
+		}
+//		System.out.println(ba.size());
+	}
+	
+	private void generateBigram() {
+		for (Emoticon e: ea){
+			String c = e.content;
+			int[] cat = e.category; 
+			for (int i = 0; i < c.length() - 1;i++){
+				Bigram bi = new Bigram(c.substring(i,i+2), cat);
+//				System.out.println(bi);
+				if (!ba.containsKey(bi.bigram)){
+					ba.put(bi.bigram, bi);
+				} else {
+					bi.add(ba.get(bi.bigram));
+					ba.put(bi.bigram, bi);
+				}
+			}
+		}
+	}
+	
+	private void getEmo(int i) {
+		ResultSet rs = op.query("SELECT * FROM `new_emoticon` LIMIT " + i * 1056 + ", 1056");
+		try {
+			while (rs.next()){
+				ea.add(new Emoticon(rs.getString("content"), 
+						new int[] {rs.getInt("happiness"), rs.getInt("sadness"), 
+					rs.getInt("fear"), rs.getInt("disgust"),
+					rs.getInt("anger"), rs.getInt("surprise"),
+					rs.getInt("love")}));
+			}
+		} catch (SQLException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+	}
+	
+	private void getEmo() {
+		ResultSet rs = op.query("SELECT * FROM `new_emoticon` LIMIT 0, 20000");
+		try {
+			while (rs.next()){
+				ea.add(new Emoticon(rs.getString("content"), 
+						new int[] {rs.getInt("happiness"), rs.getInt("sadness"), 
+					rs.getInt("fear"), rs.getInt("disgust"),
+					rs.getInt("anger"), rs.getInt("surprise"),
+					rs.getInt("love")}));
+//				System.out.println(ea.get(ea.size()-1));
+			}
+		} catch (SQLException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		CreateBigramDB cbdb = new CreateBigramDB();
+	}
+}

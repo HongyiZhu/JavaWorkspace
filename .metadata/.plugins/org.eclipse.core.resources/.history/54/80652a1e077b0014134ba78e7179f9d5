@@ -1,0 +1,11 @@
+package processing;
+
+public class Bigram {
+	String bigram = null;
+	int[] category = null;
+	
+	Bigram(String b, int[] ca) {
+		bigram = b;
+		category = ca;
+	}
+}

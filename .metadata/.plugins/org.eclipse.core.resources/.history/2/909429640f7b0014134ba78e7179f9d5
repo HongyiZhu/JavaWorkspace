@@ -1,0 +1,28 @@
+package processing;
+
+public class Bigram {
+	String bigram = null;
+	int[] category = {0, 0, 0, 0, 0, 0, 0};
+	
+	Bigram(String b, int[] ca) {
+		bigram = b;
+		for (int i = 0; i < 7; i++){
+			category[i] = ca[i];
+		}
+	}
+	
+	public void add(Bigram b) {
+		for (int i = 0;i < 7; i++){
+			this.category[i] += b.category[i];
+		}
+	}
+	
+	@Override
+	public String toString(){
+		String str = this.bigram;
+		for (int i = 0;i < 7;i++){
+			str = str + ", " + this.category[i]; 
+		}
+		return str;
+	}
+}

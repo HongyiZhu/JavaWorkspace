@@ -1,0 +1,17 @@
+package processing;
+
+public class Bigram {
+	String bigram = null;
+	int[] category = null;
+	
+	Bigram(String b, int[] ca) {
+		bigram = b;
+		category = ca;
+	}
+	
+	public void add(Bigram b) {
+		for (int i = 0;i < 7; i++){
+			this.category[i] += b.category[i];
+		}
+	}
+}

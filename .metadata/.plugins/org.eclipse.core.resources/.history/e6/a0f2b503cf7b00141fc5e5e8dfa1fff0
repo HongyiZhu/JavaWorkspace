@@ -1,0 +1,68 @@
+package processing;
+
+public class Unigram {
+	public String content = null;
+	int o = 0;
+	int[] temp = {0, 0, 0, 0, 0, 0, 0};
+	public double[] category = {0, 0, 0, 0, 0, 0, 0};
+	
+	Unigram(String c, int occ, int[] cate) {
+		content = c;
+		o = occ;
+		temp = cate;
+		for (int i = 0;i < temp.length;i++){
+			if (temp[i] == 0){
+				category[i] = 0.0001;
+			} else {
+				category[i] = (double) temp[i] / (double) o;
+			}
+		}
+		for (int i = 0;i < category.length;i++){
+			category[i] = Math.log(category[i]);
+		}
+	}
+	
+	Unigram(String u, int[] ca) {
+		content = u;
+		for (int i = 0; i < 7; i++){
+			temp[i] = ca[i];
+		}
+	}
+	
+	public void add(Unigram u) {
+		for (int i = 0;i < 7; i++){
+			this.temp[i] += u.temp[i];
+		}
+	}
+	
+	@Override
+	public String toString(){
+		String str = this.content;
+		for (int i = 0;i < 7;i++){
+			str = str + ", " + this.temp[i]; 
+		}
+		for (int i = 0;i < 7;i++){
+			str = str + ", " + this.category[i]; 
+		}
+		return str;
+	}
+	
+	public void calc(){
+		for (int i = 0; i < 7;i++){
+			o += temp[i];
+		}
+		
+		for (int i = 0; i < 7;i++){
+			if (category[i] == 0){
+				category[i] = 0.0001;
+			} else {
+				category[i] = (double) temp[i] / (double) o;
+			}
+		}
+		
+		for (int i = 0;i < 7;i++){
+			category[i] = Math.log(category[i]);
+		}
+//		System.out.println(this);
+	}
+}
